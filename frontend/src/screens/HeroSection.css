@@ -1,0 +1,106 @@
+/* Hero Section Styles */
+.hero-section {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .hero-section video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-video {
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+    filter: blur(2px); /* Adjust blur level as needed */
+    top: 0;
+    left: 0;
+    z-index: -1; /* Keeps video in the background */
+  }  
+  
+  .hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #000;
+    width: 90%;
+    max-width: 800px;
+  }
+  
+  .hero-content h2 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #000;
+    text-shadow: 0 0 10px white;
+  }
+  
+  .hero-content p {
+    font-size: 1.5rem;
+    margin-top: 1rem;
+    color: #000;
+  }
+  
+  .consult-btn {
+    margin-top: 1.5rem;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    background-color: #8F9F6D;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .consult-btn:hover {
+    background-color: #748556;
+  }
+  
+  .treatment-tabs {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .treatment-tabs button {
+    padding: 10px 20px;
+    background-color: #fff;
+    color: #8F9F6D;
+    border: 1px solid #8F9F6D;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .treatment-tabs button:hover {
+    background-color: #8F9F6D;
+    color: #fff;
+  }
+  
+  @media (max-width: 768px) {
+    .hero-content h2 {
+      font-size: 1.8rem;
+    }
+  
+    .hero-content p {
+      font-size: 1.1rem;
+    }
+  
+    .consult-btn {
+      font-size: 1rem;
+      padding: 8px 16px;
+    }
+  
+    .treatment-tabs button {
+      font-size: 0.9rem;
+      padding: 8px 16px;
+    }
+  }
+  

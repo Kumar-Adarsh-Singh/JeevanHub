@@ -1,0 +1,215 @@
+.talk-of-the-town {
+	padding: 40px 20px;
+	background-color: #f9f9f9;
+	margin: 0 auto;
+	max-width: 1200px;
+	width: 95%;
+	/* Fluid container width */
+	border-radius: 25px;
+	background-image: url("../media/homebg.png");
+	box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.35);
+	margin-bottom: 35px;
+	box-sizing: border-box;
+}
+
+.header1 {
+	text-align: center;
+	margin-bottom: 40px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.title {
+	font-size: 2.2rem;
+	font-weight: 700;
+	color: #2a2a2a;
+	letter-spacing: 0.5px;
+	margin: 0;
+	text-transform: uppercase;
+}
+
+.gradient-border {
+	height: 3px;
+	background: linear-gradient(to right, #ff6a00, #ffcc00, #ff6a00);
+	width: 100%;
+	margin-top: 10px;
+}
+
+.slider-container {
+	position: relative;
+	display: flex;
+	justify-content: flex-start;
+	padding: 10px 0;
+	overflow: hidden;
+	width: 100%;
+}
+
+.slick-slider1 {
+	display: flex;
+	transition: transform 0.3s ease;
+	width: 100%;
+	align-items: flex-start;
+}
+
+.slick-slide1 {
+	flex: 0 0 calc(100% / var(--items-per-page, 3));
+	width: calc(100% / var(--items-per-page, 3));
+	flex-shrink: 0;
+	box-sizing: border-box;
+	padding: 0 15px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	/* Creates spacing between cards */
+}
+
+.video-card1 {
+	background-color: #fff;
+	border-radius: 12px;
+	overflow: hidden;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+	position: relative;
+	transition: transform 0.3s ease-in-out;
+	background: linear-gradient(45deg, #8F9F6D, #adc084, #daf4a4);
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: auto;
+}
+
+.video-card1::after {
+	content: " ";
+	position: absolute;
+	background: rgba(255, 255, 255, 0.5);
+	height: 200px;
+	width: 200px;
+	border-radius: 500px;
+	bottom: -10%;
+	right: -35%;
+	z-index: 10;
+}
+
+.video-card1::before {
+	content: " ";
+	position: absolute;
+	background: rgba(255, 255, 255, 0.5);
+	height: 150px;
+	width: 150px;
+	border-radius: 500px;
+	top: -10%;
+	left: -35%;
+	z-index: 10;
+}
+
+.video-card1:hover {
+	transform: translateY(-10px);
+}
+
+.video-thumbnail {
+	width: 100%;
+	height: 200px;
+	overflow: hidden;
+	position: relative;
+	z-index: 11;
+}
+
+.thumbnail-img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: opacity 0.3s ease;
+	position: relative;
+	z-index: 11;
+}
+
+.content {
+	padding: 20px;
+	position: relative;
+	z-index: 11;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+}
+
+.influencer-name {
+	font-size: 1.3rem;
+	font-weight: 600;
+	color: #333;
+	margin: 0;
+	text-align: center;
+}
+
+.video-title {
+	font-size: 0.95rem;
+	color: #666;
+	margin-top: 8px;
+	text-align: center;
+}
+
+.separator {
+	height: 1px;
+	background-color: #eee;
+	margin: 15px 0;
+	width: 80%;
+}
+
+.followers {
+	font-size: 0.9rem;
+	color: #444;
+	margin: 5px 0;
+	text-align: center;
+}
+
+.arrow-button {
+	position: absolute;
+	top: 50%;
+	background-color: rgba(0, 0, 0, 0.6);
+	color: white;
+	border: none;
+	padding: 12px;
+	font-size: 1.4rem;
+	cursor: pointer;
+	z-index: 10;
+	transform: translateY(-50%);
+	transition: background-color 0.3s ease;
+	border-radius: 50%;
+}
+
+.arrow-button:hover {
+	background-color: rgba(0, 0, 0, 0.8);
+}
+
+.left {
+	left: 10px;
+}
+
+.right {
+	right: 10px;
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+	.talk-of-the-town {
+		padding: 30px 10px;
+	}
+
+	.title {
+		font-size: 1.8rem;
+	}
+
+	.arrow-button {
+		padding: 8px;
+		font-size: 1.1rem;
+	}
+
+	.content {
+		padding: 15px;
+	}
+
+	.influencer-name {
+		font-size: 1.15rem;
+	}
+}

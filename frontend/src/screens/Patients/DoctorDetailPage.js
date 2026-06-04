@@ -1,0 +1,293 @@
+import React, { useState, useContext } from "react";
+import { useLocation } from "react-router-dom";
+import "./DoctorDetailPage.css"; // Ensure this path matches the location of your CSS file
+import { AuthContext } from "../../context/AuthContext";
+import { useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
+
+function DoctorDetail() {
+	const location = useLocation();
+	const { doctor } = location.state;
+
+	const { auth } = useContext(AuthContext);
+	const patientFirstName = auth.user?.firstName || "Patient";
+	const patientLastName = auth.user?.lastName || "";
+	const patientGender = auth.user?.gender;
+	const patientAge = auth.user?.age;
+
+	const patientName = patientFirstName + " " + patientLastName;
+
+	const [selectedTime, setSelectedTime] = useState(null); // Track selected time slot
+	const [patientIllness, setPatientIllness] = useState(""); // Track patient illness
+	const [dateOfAppointment, setDateOfAppointment] = useState(""); // Track the date of appointment
+	const [reviews, setReviews] = useState([]);
+	const [statusMessage, setStatusMessage] = useState({ message: '', type: '' });
+
+	// Helper function to decode and extract patient ID from JWT token
+	const getPatientIdFromToken = () => {
+		const token = localStorage.getItem("token");
+		if (token) {
+			try {
+				const decoded = jwtDecode(token);
+				// Assuming your token payload includes the MongoDB user ID field, often named 'id' or 'userId'
+				return decoded.id || decoded.userId || null;
+			} catch (e) {
+				console.error("Failed to decode token:", e);
+				return null;
+			}
+		}
+		return null;
+	};
+
+	const patientId = getPatientIdFromToken();
+
+	const handleTimeSlotClick = (time) => {
+		setSelectedTime(time); // Set the selected time slot
+	};
+
+	const handleBookAppointment = async () => {
+		if (selectedTime && patientIllness && dateOfAppointment) {
+			const email = localStorage.getItem("email");
+			const role = localStorage.getItem("role");
+
+			const convertTo24Hour = (timeStr) => {
+				let [time, modifier] = timeStr.split(" ");
+				let [hours, minutes] = time.split(":");
+
+				if (modifier === "PM" && hours !== "12") {
+					hours = parseInt(hours, 10) + 12;
+				}
+				if (modifier === "AM" && hours === "12") {
+					hours = "00";
+				}
+
+				return `${hours}:${minutes}`;
+			};
+
+			const time24 = convertTo24Hour(selectedTime);
+			const [year, month, day] = dateOfAppointment.split("-");
+			const [hours, minutes] = time24.split(":");
+
+			const appointmentDateTime = new Date(
+				year,
+				month - 1,
+				day,
+				hours,
+				minutes
+			);
+
+			const now = new Date();
+
+			const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
+
+			if (appointmentDateTime <= oneHourLater) {
+				setStatusMessage({
+					message: "Please select a time at least 1 hour from now.",
+					type: "error"
+				});
+				return;
+			}
+
+			console.log(`Selected time: ${selectedTime}`);
+			console.log(`Patient Illness: ${patientIllness}`);
+			console.log(`User Email: ${email}`);
+			console.log(`User Role: ${role}`);
+
+			// Ensure patientId is available
+			if (!patientId) {
+				setStatusMessage({ message: "Authentication failed. Please log in again.", type: 'error' });
+				return;
+			}
+
+			if (role !== "patient") {
+				setStatusMessage({ message: "Only patients can book appointments.", type: 'error' });
+				return;
+			}
+
+			const patientEmail = localStorage.getItem("email");
+
+			// Data to be sent to the backend
+			let bookingData = {
+				doctorId: doctor._id,
+				doctorName: doctor.name,
+				doctorEmail: doctor.email,
+				timeSlot: selectedTime,
+				dateOfAppointment: dateOfAppointment,
+				patientId: patientId,
+				patientEmail: patientEmail,
+				email: email,
+				patientName: patientName,
+				patientGender: patientGender,
+				patientAge: patientAge,
+				patientIllness: patientIllness,
+				amountPaid: 0,
+				meetLink: "no",
+			};
+
+			// Include email only if the role is 'patient'
+			if (role === "patient") {
+				bookingData.email = email; // Add email to bookingData
+				console.log(`User Email: ${email}`);
+			} else {
+				// If the role is not 'patient', alert the user
+				alert("Only patients can book appointments.");
+				return; // Exit the function
+			}
+
+			try {
+				const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings`, {
+					// Replace with your API URL
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(bookingData), // Send the doctor and slot data
+				});
+
+				const result = await response.json();
+
+				if (response.ok) {
+					alert("Appointment request sent successfully!");
+					console.log("Booking response:", result); // Optional: log the server response
+				} else {
+					alert(result.error || "Failed to book appointment");
+				}
+			} catch (error) {
+				console.error("Error booking appointment:", error);
+			}
+		} else {
+			setStatusMessage({
+				message: "Please fill all fields and select a time slot.",
+				type: "error"
+			});
+		}
+	};
+
+	useEffect(() => {
+		const fetchReviews = async () => {
+			try {
+				const res = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/reviews/${doctor.email}`);
+				const data = await res.json();
+				setReviews(data);
+			} catch (err) {
+				console.error("Error fetching reviews:", err);
+			}
+		};
+		fetchReviews();
+	}, [doctor.email]);
+
+	return (
+		<div className="doctor-detail-container">
+			<div className="left-section">
+				<div className="doctor-info">
+
+					<div className="doctor-info-header">
+						<div className="doctor-image">
+							<img
+								src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+								alt=""
+							/>
+						</div>
+						<h1>Dr. {doctor.name}</h1>
+					</div>
+
+					<div className="text-info">
+						<p>Specialization: {doctor.specialization}</p>
+						<p>Experience: {doctor.experience} years</p>
+					</div>
+				</div>
+
+				<div className="about-doctor">
+					<h2>About Doctor</h2>
+					<p>Education: {doctor.education}</p>
+					<p>Gender: {doctor.gender}</p>
+					<p>Age: {doctor.age}</p>
+					<p>Location: {typeof doctor.location === "object" && doctor.location !== null
+						? (doctor.location.specific || doctor.location.pincode || "N/A")
+						: (doctor.location || "N/A")}</p>
+					<p>Price: Rs. {doctor.pricepoint}</p>
+					{/* Additional details can be listed here */}
+				</div>
+
+				<div className="reviews-section">
+					<h2>Patient Reviews</h2>
+					{reviews.length > 0 ? (
+						reviews.map((r, i) => (
+							<div key={i} className="review-card">
+								<p><strong>{r.patientName}</strong> rated: {r.rating}★</p>
+								<p className="review-text">{r.review}</p>
+								<p className="review-date">{new Date(r.dateOfAppointment).toLocaleDateString()}</p>
+							</div>
+						))
+					) : (
+						<p>No reviews yet for this doctor.</p>
+					)}
+				</div>
+			</div>
+
+			<div className="right-section">
+				<div className="consultation-info">
+					<h2>Consultation Time:</h2>
+					<div className="date-input">
+						<label htmlFor="dateOfAppointment">Date of Appointment: </label>
+						<input
+							type="date"
+							className="dateOfAppointment"
+							min={new Date().toISOString().split("T")[0]}
+							value={dateOfAppointment}
+							onChange={(e) => setDateOfAppointment(e.target.value)}
+							placeholder="dd/mm/yyyy"
+							required
+						/>
+					</div>
+
+					<p>Availability:</p>
+					<div className="availability-slots">
+						{["09:00 AM", "12:00 PM", "03:00 PM"].map((time) => (
+							<button
+								key={time}
+								onClick={() => handleTimeSlotClick(time)} // Handle button click
+								className={selectedTime === time ? "selected" : ""} // Add selected class conditionally
+							>
+								{time}
+							</button>
+						))}
+					</div>
+
+					<div className="illness-input">
+						<label htmlFor="patientIllness">Describe your illness: </label>
+						<textarea
+							className="patientIllness"
+							value={patientIllness}
+							onChange={(e) => setPatientIllness(e.target.value)}
+							placeholder="Explain in detail about the illness"
+							rows="6"
+							wrap="soft"
+							required
+						/>
+					</div>
+
+					<button className="book-appointment" onClick={handleBookAppointment}>
+						Book Appointment
+					</button>
+
+					{statusMessage.message && (
+						<p className={statusMessage.type === "error" ? "error-msg" : "success-msg"}>
+							{statusMessage.message}
+						</p>
+					)}
+				</div>
+				<div>
+					<p>
+						<b>Note: </b> Once, you see the message: "Appointment Booked
+						Successfully!", then checkout the "Your Appointed Doctor" section in
+						the home page to see whether the doctor has approved your request or
+						not.
+					</p>
+				</div>
+			</div>
+		</div>
+	);
+}
+
+export default DoctorDetail;

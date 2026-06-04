@@ -1,0 +1,149 @@
+/* PrescribeIndex.css */
+
+/* --- 1. Base Variables & Font Integration --- */
+@import url('https://fonts.googleapis.com/css2?family=Arbutus+Slab&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --pi-bg: #F2F5F7;
+  --pi-white: #FFFFFF;
+  --pi-olive: #8F9E6F;
+  --pi-text-main: #2D3126;
+  --pi-text-muted: #6C757D;
+  --pi-border: #E2E8F0;
+  --pi-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --pi-max-width: 1400px;
+}
+
+/* --- 2. Layout Container --- */
+.pi-container {
+  min-height: 100vh;
+  background-color: var(--pi-bg);
+  font-family: "Arbutus Slab", serif;
+  color: var(--pi-text-main);
+  padding: 2rem 1rem;
+}
+
+.pi-main {
+  max-width: var(--pi-max-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; /* Consistent spacing between components */
+}
+
+/* --- 3. Desktop Grid Layout --- */
+/* Assuming you want the Header at top, then History and Tabs side-by-side 
+   on larger screens to maximize horizontal space.
+*/
+@media (min-width: 1024px) {
+  .pi-main {
+    display: grid;
+    grid-template-columns: 380px 1fr; /* Sidebar for History, Main for Tabs */
+    grid-template-rows: auto 1fr;
+    gap: 2rem;
+  }
+
+  /* Patient Header spans across both columns at the top */
+  .pi-main > *:first-child {
+    grid-column: 1 / -1;
+  }
+
+  /* History column (left) */
+  .pi-main > *:nth-child(2) {
+    grid-column: 1;
+    height: fit-content;
+  }
+
+  /* Tabs/Form column (right) */
+  .pi-main > *:nth-child(3) {
+    grid-column: 2;
+  }
+}
+
+/* --- 4. Shared Component Styling --- */
+/* These targets the root divs inside PatientHeader, PrescriptionHistory, etc. */
+.pi-main > section, 
+.pi-main > div {
+  background: var(--pi-white);
+  border-radius: 16px;
+  border: 1px solid var(--pi-border);
+  box-shadow: var(--pi-shadow);
+  padding: 1.5rem;
+  transition: transform 0.2s ease;
+}
+
+/* Apply card-section style to the main columns (assuming components inside use it) 
+   If your React components (PatientHeader, PrescriptionHistory, PrescriptionTabs) 
+   don't have internal card styling, you'll need to wrap them in a <div> with this class, 
+   or add the padding/background directly to your components' root elements. 
+   
+   For this CSS, I'll assume your components use a wrapper div that needs styling:
+*/
+
+/* Example for how you'd style the component containers if they are wrapped */
+.patient-header-wrapper {
+    /* Assuming PatientHeader is wrapped here */
+    composes: card-section; /* Use CSS Modules or a similar technique for reuse */
+    /* Alternatively, manually repeat styles if not using modules: */
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: var(--space-xl);
+    box-shadow: var(--card-shadow);
+}
+
+/* Enhance readability for section headers within components */
+h2, h3 {
+  font-family: "Arbutus Slab", serif;
+  margin-top: 0;
+  color: var(--pi-text-main);
+  font-weight: 500;
+}
+
+/* Ensure data text remains readable */
+span, p, td, li {
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+/* --- 5. Responsive Elements --- */
+@media (max-width: 1023px) {
+  .pi-container {
+    padding: 1rem;
+  }
+  
+  .pi-main {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* --- 6. Scrollbar Styling (Optional but recommended for Desktop) --- */
+.pi-main ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.pi-main ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.pi-main ::-webkit-scrollbar-thumb {
+  background: var(--pi-border);
+  border-radius: 10px;
+}
+
+.pi-main ::-webkit-scrollbar-thumb:hover {
+  background: var(--pi-olive);
+}
+
+/* --- 7. Loading States --- */
+.pi-loading-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: var(--pi-olive);
+  font-weight: bold;
+  font-size: 1.2rem;
+}

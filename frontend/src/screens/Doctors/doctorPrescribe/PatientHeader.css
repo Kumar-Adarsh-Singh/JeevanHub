@@ -1,0 +1,200 @@
+/* Container & Platform Styling */
+.platform-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #334155;
+}
+
+.platform-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.platform-title {
+    color: #0f172a;
+    font-size: 1.875rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.platform-subtitle {
+    color: #64748b;
+    font-size: 1rem;
+}
+
+.header-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, #e2e8f0, transparent);
+    margin: 1.5rem 0;
+}
+
+/* Main Patient Header Card */
+.patient-header-cards {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #f1f5f9;
+    padding: 1.5rem;
+    padding-top: 29px;
+    margin-top: 10rem;
+    margin-bottom: 2rem;
+    margin-left: 5rem;
+}
+
+.patient-header-contents {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+/* Avatar Styles */
+.patient-avatars {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #e2e8f0;
+}
+
+.patient-avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.patient-avatar-fallback {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #3b82f6;
+    text-transform: uppercase;
+}
+
+/* Info Section Styling */
+.patient-info-containers {
+    flex: 1;
+}
+
+.patient-name-id-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.patient-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.patient-id-tag {
+    background-color: #eff6ff;
+    color: #3b82f6;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Details Grid */
+.patient-details-grids {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #475569;
+}
+
+.detail-icon {
+    width: 18px;
+    height: 18px;
+    color: #3b82f6; /* Modern Blue */
+    flex-shrink: 0;
+}
+
+.detail-text {
+    font-size: 0.9375rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Content Placeholder Styling */
+.content-placeholder {
+    padding: 4rem 2rem;
+    text-align: center;
+    background-color: #f8fafc;
+    border: 2px dashed #e2e8f0;
+    border-radius: 12px;
+}
+
+.placeholder-text {
+    color: #94a3b8;
+    font-style: italic;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 640px) {
+    .patient-header-contents {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .patient-name-id-section {
+        justify-content: center;
+    }
+    
+    .patient-details-grids {
+        grid-template-columns: 1fr;
+    }
+    
+    .detail-item {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 640px) {
+  .detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+
+    padding: 10px 12px;
+
+    /* scrolling behavior */
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    /* prevent awkward wrapping */
+    white-space: nowrap;
+
+    /* smooth touch scrolling */
+    -webkit-overflow-scrolling: touch;
+
+    /* optional visual polish */
+    border-radius: 8px;
+  }
+
+  /* hide scrollbar (optional but clean) */
+  .detail-item::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .detail-item::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+  }
+}

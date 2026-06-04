@@ -1,0 +1,374 @@
+/* DoctorManagement.css  (or rename to DoctorManagementImproved.css) */
+
+:root {
+  --primary-green:   #8F9E6F;
+  --dark-green:      #3E4B2C;
+  --light-green:     #E9F6E8;
+  --muted-green:     #9AAA6F;
+  --beige:           #E3C79E;
+  --page-bg:         #F7FAF7;
+  --text-dark:       #333333;
+  --white:           #FFFFFF;
+  --border-light:    #e5e7eb;
+  --shadow-sm:       0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md:       0 4px 12px rgba(0,0,0,0.10);
+  --radius:          10px;
+  --transition:      0.18s ease;
+}
+
+.dm-management-container {
+  min-height: 100vh;
+  background: var(--page-bg);
+  /* padding: 1.5rem 1rem; */
+      padding: 9.5rem 1rem;
+  color: var(--text-dark);
+}
+
+.dm-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.8rem;
+  flex-wrap: wrap;
+}
+
+.dm-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  background: white;
+  border: 1px solid var(--muted-green);
+  border-radius: var(--radius);
+  color: var(--dark-green);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.dm-back-btn:hover {
+  background: var(--light-green);
+  border-color: var(--primary-green);
+}
+
+.dm-controls-container {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.dm-search-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .dm-search-bar {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.dm-search-bar > input {
+  flex: 1;
+  padding: 0.75rem 1rem 0.75rem 3.2rem;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.dm-search-bar > input:focus {
+  outline: none;
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 3px rgba(143,158,111,0.15);
+}
+
+.dm-search-icon {
+  position: absolute;
+    left: 3rem;
+    top: 47%;
+  transform: translateY(-50%);
+  color: var(--muted-green);
+  pointer-events: none;
+}
+
+.dm-filter-wrapper {
+  position: relative;
+  min-width: 220px;
+}
+
+.dm-filter-icon {
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted-green);
+  pointer-events: none;
+}
+
+.dm-specialization-filter {
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 2.8rem;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  background: white;
+  appearance: none;
+  cursor: pointer;
+}
+
+.dm-specialization-filter:focus {
+  outline: none;
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 3px rgba(143,158,111,0.15);
+}
+
+/* ───────────── Table ───────────── */
+
+.dm-table-wrapper {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow-x: auto;
+}
+
+.dm-management-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 720px; /* prevents too much squeezing on mobile */
+}
+
+.dm-management-table th,
+.dm-management-table td {
+  padding: 0.9rem 1.1rem;
+  text-align: left;
+}
+
+.dm-management-table thead {
+  background: var(--light-green);
+  border-bottom: 2px solid var(--muted-green);
+}
+
+.dm-management-table th {
+  font-weight: 600;
+  color: var(--dark-green);
+  white-space: nowrap;
+}
+
+.dm-th-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dm-management-table tbody tr {
+  transition: background 0.15s;
+  cursor: pointer;
+}
+
+.dm-management-table tbody tr:hover {
+  background: rgba(233, 246, 232, 0.45);
+}
+
+.dm-doctor-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.dm-avatar-sm {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--primary-green);
+  color: white;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+}
+
+.dm-doctor-email {
+  font-size: 0.82rem;
+  color: #555;
+  margin-top: 0.2rem;
+}
+
+.dm-action-buttons {
+  white-space: nowrap;
+}
+
+.dm-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: var(--primary-green);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.dm-edit-btn:hover {
+  background: var(--dark-green);
+}
+
+/* ───────────── Edit Modal ───────────── */
+
+.dm-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(3px);
+}
+
+.dm-modal-content {
+  background: white;
+  border-radius: 14px;
+  width: 92%;
+  max-width: 520px;
+  max-height: 94vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-md);
+}
+
+.dm-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.3rem 1.6rem;
+  background: var(--light-green);
+  border-radius: 14px 14px 0 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.dm-modal-header h3 {
+  margin: 0;
+  color: var(--dark-green);
+  font-size: 1.35rem;
+}
+
+.dm-close-modal-btn {
+  background: none;
+  border: none;
+  color: var(--dark-green);
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 6px;
+  transition: var(--transition);
+}
+
+.dm-close-modal-btn:hover {
+  background: rgba(62,75,44,0.12);
+}
+
+.dm-edit-form {
+  padding: 1.6rem;
+  display: grid;
+  gap: 1.3rem;
+}
+
+.dm-form-row {
+  display: grid;
+  gap: 1.3rem;
+}
+
+@media (min-width: 500px) {
+  .dm-form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+}
+
+@media (max-width: 500px) {
+ 
+  .dm-search-icon {
+    position: absolute;
+    left: 3rem;
+    top: 65%;
+    transform: translateY(-50%);
+    color: var(--muted-green);
+    pointer-events: none;
+}
+}
+
+.dm-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.dm-form-group label {
+  font-weight: 500;
+  color: var(--dark-green);
+  font-size: 0.94rem;
+}
+
+.dm-form-group input {
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.dm-form-group input:focus {
+  outline: none;
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 3px rgba(143,158,111,0.14);
+}
+
+.dm-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.dm-btn-cancel,
+.dm-btn-save {
+  padding: 0.65rem 1.4rem;
+  border-radius: var(--radius);
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: var(--transition);
+}
+
+.dm-btn-cancel {
+  background: #f3f4f6;
+  color: #444;
+}
+
+.dm-btn-cancel:hover {
+  background: #e5e7eb;
+}
+
+.dm-btn-save {
+  background: var(--primary-green);
+  color: white;
+}
+
+.dm-btn-save:hover {
+  background: var(--dark-green);
+}
+
+/* No results row */
+.dm-no-results {
+  text-align: center;
+  padding: 3.5rem 1rem;
+  color: #666;
+  font-size: 1.05rem;
+}

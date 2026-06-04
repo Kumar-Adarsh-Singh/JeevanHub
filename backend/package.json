@@ -1,0 +1,50 @@
+{
+  "name": "backend-ayurvedic-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "bcrypt",
+      "ngrok"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "adm-zip": "^0.5.16",
+    "axios": "^1.13.4",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dompurify": "^3.2.7",
+    "dotenv": "^16.6.1",
+    "express": "^4.19.2",
+    "fs": "^0.0.1-security",
+    "gapi-script": "^1.2.0",
+    "googleapis": "^144.0.0",
+    "joi": "^17.13.3",
+    "jsdom": "^27.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "marked": "^16.4.0",
+    "mongodb": "^6.9.0",
+    "mongoose": "^8.8.0",
+    "multer": "^1.4.5-lts.1",
+    "ngrok": "^5.0.0-beta.2",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^6.10.0",
+    "nodemon": "^3.1.4",
+    "package.json": "^2.0.1",
+    "path": "^0.12.7",
+    "qrcode": "^1.5.4",
+    "razorpay": "^2.9.6",
+    "shelljs": "^0.10.0",
+    "xlsx": "^0.18.5"
+  }
+}

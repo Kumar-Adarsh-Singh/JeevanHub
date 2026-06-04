@@ -1,0 +1,145 @@
+.footer {
+	background-color: #232b18; /* Deep olive charcoal */
+	color: #e4e7e0; /* Warm off-white */
+	padding: 60px 20px 30px 20px;
+	font-family: "Quicksand", "Inter", sans-serif;
+	width: 100%;
+	position: relative;
+	box-sizing: border-box;
+}
+
+.footer-content {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	max-width: 1200px;
+	margin: 0 auto;
+	gap: 40px;
+	box-sizing: border-box;
+}
+
+.footer-section {
+	flex: 1;
+	min-width: 220px;
+	margin-bottom: 20px;
+	text-align: left;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	box-sizing: border-box;
+}
+
+.footer-section h4 {
+	font-size: 1.15rem;
+	font-weight: 700;
+	color: #8f9f6d; /* Brand olive green */
+	margin-bottom: 20px;
+	position: relative;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	margin-top: 0;
+}
+
+.footer-section h4::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	bottom: -6px;
+	width: 30px;
+	height: 2px;
+	background-color: #8f9f6d;
+}
+
+.footer-section p {
+	font-size: 0.95rem;
+	color: #b0b7a8;
+	line-height: 1.6;
+	margin: 0 0 10px 0;
+}
+
+.footer-section ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	width: 100%;
+}
+
+.footer-section ul li {
+	margin-bottom: 12px;
+}
+
+.footer-section a {
+	text-decoration: none;
+	color: #b0b7a8;
+	font-size: 0.95rem;
+	transition: all 0.3s ease;
+	display: inline-block;
+}
+
+.footer-section a:hover {
+	color: #fff;
+	transform: translateX(5px);
+}
+
+.footer-bottom {
+	border-top: 1px solid rgba(255, 255, 255, 0.08);
+	padding-top: 30px;
+	margin-top: 40px;
+	text-align: center;
+	width: 100%;
+}
+
+.footer-bottom p {
+	font-size: 0.85rem;
+	color: #838a7c;
+	margin: 0;
+}
+
+/* Base resets & layout helpers */
+html,
+body {
+	height: 100%;
+	margin: 0;
+}
+
+#root {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.footer {
+		padding: 40px 20px 20px 20px;
+	}
+
+	.footer-content {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 30px;
+	}
+
+	.footer-section {
+		min-width: 100%;
+		text-align: center;
+		align-items: center;
+	}
+
+	.footer-section h4::after {
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
+	.footer-section a:hover {
+		transform: none;
+		color: #fff;
+	}
+}
+
+@media (max-width: 480px) {
+	.footer-content {
+		grid-template-columns: 1fr;
+		gap: 30px;
+	}
+}
