@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 import v from '../media/mov_bbb.mp4';
 import v1 from '../media/v1.mp4';
 import './HeroSection.css';
@@ -7,9 +8,14 @@ import myPicture from '../media/bgpic.jpg';
 
 function HeroSection() {
   const navigate = useNavigate();
+  const { auth } = useContext(AuthContext);
 
   const handleConsultButtonClick = () => {
-    navigate('/signin');
+    if (auth?.token) {
+      navigate('/doctors'); // If already logged in, go straight to booking
+    } else {
+      navigate('/signin'); // Otherwise, prompt to sign in
+    }
   };
 
   return (

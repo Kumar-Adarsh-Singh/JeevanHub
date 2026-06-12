@@ -10,8 +10,8 @@ exports.createOrder = async (req, res) => {
         console.log("SECRET:", process.env.RAZORPAY_KEY_SECRET);
         
         const order = await razorpay.orders.create({
-            // amount: amount * 100, // rupees → paise
-            amount: 1 * 100, // rupees → paise
+            amount: amount * 100, // rupees → paise
+
             currency: "INR",
             receipt: "receipt_" + Date.now(),
         });
