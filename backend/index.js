@@ -37,6 +37,7 @@ mongoose
   .catch((err) => console.error("MongoDB connection error:", err));
 
 const allowedOrigins = [
+  process.env.FRONTEND_URL || "http://localhost:3000", // Dynamic frontend URL
   "http://localhost:3000", // For local development
   "https://ayurvedic-app-frontend.onrender.com",
   "https://agiagentworld.com",

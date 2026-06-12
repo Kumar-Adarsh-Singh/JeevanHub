@@ -24,7 +24,7 @@ const DoctorsSection = () => {
 
   // Fetch doctors from backend on component mount
   useEffect(() => {
-    fetch(`${process.env.AYURVEDA_BACKEND_URL || 'http://localhost:8080'}/api/doctors`)
+    fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL || 'http://localhost:8080'}/api/doctors`)
       .then((response) => response.json())
       .then((data) => {
         const mappedDoctors = data.map((doctor) => ({
@@ -49,7 +49,7 @@ const DoctorsSection = () => {
     if (thumbnail.startsWith('http://') || thumbnail.startsWith('https://')) {
       return thumbnail;
     }
-    const backendUrl = process.env.AYURVEDA_BACKEND_URL || 'http://localhost:8080';
+    const backendUrl = process.env.REACT_APP_AYURVEDA_BACKEND_URL || 'http://localhost:8080';
     if (thumbnail.startsWith('/')) {
       return `${backendUrl}${thumbnail}`;
     }
