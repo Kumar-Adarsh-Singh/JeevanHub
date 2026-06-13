@@ -24,21 +24,26 @@ function AuthProvider({ children }) {
 					if (response.ok) {
 						setAuth({ ...auth, user: data.user, role: data.user.role });
 					} else {
-						setAuth({ token: null, user: null });
+						setAuth({ token: null, user: null, role: 'guest' });
 						localStorage.removeItem('token');
 						localStorage.removeItem('role');
 					}
 				} catch (error) {
 					console.error('Error fetching user:', error);
-					setAuth({ token: null, user: null });
+					setAuth({ token: null, user: null, role: 'guest' });
 					localStorage.removeItem('token');
+					localStorage.removeItem('role');
+				}
+			} else {
+				if (auth.role !== 'guest' || localStorage.getItem('role')) {
+					setAuth({ token: null, user: null, role: 'guest' });
 					localStorage.removeItem('role');
 				}
 			}
 		};
 
 		fetchUser();
-	}, [auth.token]);
+	}, [auth.token, auth.role]);
 
 	return (
 		<AuthContext.Provider value={{ auth, setAuth }}>

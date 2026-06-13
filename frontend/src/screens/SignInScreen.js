@@ -1,11 +1,11 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
 import "./SignInScreen.css";
 import logo from "../media/logo.png"; // Import your logo
 import { AuthContext } from "../context/AuthContext";
 
 function SignInScreen() {
-	const { setAuth } = useContext(AuthContext);
+	const { auth, setAuth } = useContext(AuthContext);
 	const [formData, setFormData] = useState({
 		email: "",
 		password: "",
@@ -21,6 +21,30 @@ function SignInScreen() {
 	const [showReset, setShowReset] = useState(false);
 	const navigate = useNavigate();
 	const [showPage, setShowPage] = useState("enterEmail");
+
+	// Redirect if user is already authenticated
+	useEffect(() => {
+		if (auth && auth.user) {
+			const role = auth.role || localStorage.getItem("role");
+			switch (role) {
+				case "doctor":
+					navigate("/doctor-home", { replace: true });
+					break;
+				case "retailer":
+					navigate("/retailer-home", { replace: true });
+					break;
+				case "patient":
+					navigate("/patient-home", { replace: true });
+					break;
+				case "admin":
+					navigate("/admin-home", { replace: true });
+					break;
+				default:
+					navigate("/", { replace: true });
+					break;
+			}
+		}
+	}, [auth, navigate]);
 
 	const handleInputChange = (e) => {
 		setFormData({

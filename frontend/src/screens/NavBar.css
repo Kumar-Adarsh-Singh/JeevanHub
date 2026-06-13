@@ -41,7 +41,9 @@
 }
 
 .dropdown {
-	width: 85px;
+	width: auto;
+	min-width: 100px;
+	max-width: 150px;
 	flex-shrink: 0;
 	display: flex;
 	align-items: center;
@@ -58,7 +60,7 @@
 	border: none;
 	background-color: transparent;
 	color: #6e6e33;
-	padding: 8px;
+	padding: 8px 25px 8px 12px;
 	font-size: 16px;
 	width: 100%;
 	cursor: pointer;
@@ -68,6 +70,9 @@
 	margin-bottom: 0;
 	outline: none;
 	box-shadow: none;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
 }
 
 .nav-logo {
@@ -345,12 +350,13 @@
 	}
 
 	.dropdown {
-		width: 70px;
+		width: auto;
+		max-width: 120px;
 	}
 
 	.dropdown select {
 		font-size: 13px;
-		padding: 4px;
+		padding: 4px 20px 4px 8px;
 	}
 
 	.search-input {

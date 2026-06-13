@@ -14,16 +14,37 @@ import {
   Bar,
   ScatterChart,
   Scatter,
+  ResponsiveContainer
 } from "recharts";
-import "./DoctorAnalytics.css"; // Ensure this CSS file is linked
+import "./DoctorAnalytics.css";
+
+// Customized label for Pie/Donut Chart
+const RADIAN = Math.PI / 180;
+const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name }) => {
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+  if (percent === 0) return null;
+
+  return (
+    <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontWeight="bold" fontSize="14">
+      {`${(percent * 100).toFixed(0)}%`}
+    </text>
+  );
+};
+
+const PIE_COLORS = ["#6366F1", "#14B8A6", "#F59E0B"];
+const LINE_COLOR = "#8B5CF6";
+const BAR_COLOR = "#3B82F6";
+const SCATTER_COLOR = "#EC4899";
 
 function DoctorAnalytics() {
-  const [activeTab, setActiveTab] = useState("Gender");
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const email = localStorage.getItem("email"); // Assuming the doctor's email is stored in localStorage
+  const email = localStorage.getItem("email");
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -34,7 +55,6 @@ function DoctorAnalytics() {
         }
 
         const data = await response.json();
-        // Filter bookings for the logged-in doctor
         const doctorBookings = data.bookings.filter(
           (booking) => booking.doctorEmail === email
         );
@@ -54,7 +74,7 @@ function DoctorAnalytics() {
     { name: "Male", value: bookings.filter((b) => b.patientGender === "Male").length },
     { name: "Female", value: bookings.filter((b) => b.patientGender === "Female").length },
     { name: "Other", value: bookings.filter((b) => b.patientGender === "Other").length },
-  ];
+  ].filter(d => d.value > 0); // Only show segments with data
 
   // Data for Age Line Graph
   const ageData = [
@@ -67,16 +87,14 @@ function DoctorAnalytics() {
   ];
 
   // Data for Monthly Bar Graph
-  const currentYear = new Date().getFullYear(); // Get the current year
+  const currentYear = new Date().getFullYear();
   const currentYearBookings = bookings.filter(
     (booking) => new Date(booking.dateOfAppointment).getFullYear() === currentYear
   );
 
-  // Generate monthly data for the current year
   const monthlyData = Array.from({ length: 12 }, (_, i) => {
-    const month = i + 1;
     return {
-      month: new Date(currentYear, i).toLocaleString("default", { month: "short" }), // Short month name (e.g., Jan, Feb)
+      month: new Date(currentYear, i).toLocaleString("default", { month: "short" }),
       count: currentYearBookings.filter(
         (booking) => new Date(booking.dateOfAppointment).getMonth() === i
       ).length,
@@ -89,124 +107,117 @@ function DoctorAnalytics() {
     .map((b) => ({ rating: b.rating, date: new Date(b.dateOfAppointment).toLocaleDateString() }));
 
   if (loading) {
-    return <p style={{marginTop:"150px",padding:"15px", background:"white", width:"max-content", borderRadius:"15px", marginLeft:"50px"}}>Loading...</p>;
+    return (
+      <div className="loader-container">
+        <div className="spinner"></div>
+        <p>Loading your analytics...</p>
+      </div>
+    );
   }
 
   if (error) {
-    return <p style={{marginTop:"150px",padding:"15px", background:"white", width:"max-content", borderRadius:"15px", marginLeft:"50px"}}>Error: {error}</p>;
+    return (
+      <div className="error-container">
+        <p>Error: {error}</p>
+      </div>
+    );
   }
 
   return (
     <div className="doctor-analytics-container">
-      <h1>Doctor Analytics</h1>
-
-      {/* Tabs for Different Graphs */}
-      <div className="tabs">
-        <button
-          onClick={() => setActiveTab("Gender")}
-          className={`tab ${activeTab === "Gender" ? "active" : ""}`}
-        >
-          Gender Distribution
-        </button>
-        <button
-          onClick={() => setActiveTab("Age")}
-          className={`tab ${activeTab === "Age" ? "active" : ""}`}
-        >
-          Age Distribution
-        </button>
-        <button
-          onClick={() => setActiveTab("Monthly")}
-          className={`tab ${activeTab === "Monthly" ? "active" : ""}`}
-        >
-          Monthly Appointments
-        </button>
-        <button
-          onClick={() => setActiveTab("Rating")}
-          className={`tab ${activeTab === "Rating" ? "active" : ""}`}
-        >
-          Patient Ratings
-        </button>
+      <div className="analytics-header">
+        <h1>Dashboard Overview</h1>
+        <p>Track your appointments, patient demographics, and performance.</p>
       </div>
 
-      {/* Gender Pie Chart */}
-      {activeTab === "Gender" && (
-        <div className="chart-container">
-          <h2>Gender Distribution of Patients</h2>
-          <PieChart width={500} height={400}>
-            <Pie
-              data={genderData}
-              cx={200}
-              cy={200}
-              outerRadius={80}
-              fill="#8884d8"
-              dataKey="value"
-              labelLine={false} // Disable label lines
-              label={false} // Disable labels inside the chart
-            >
-              {genderData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={["#0088FE", "#00C49F", "#FFBB28"][index % 3]} />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend
-              layout="vertical" // Display legend vertically
-              align="right" // Align legend to the right
-              verticalAlign="middle" // Center the legend vertically
-              wrapperStyle={{ paddingLeft: "20px" }} // Add some padding
-              formatter={(value, entry, index) => {
-                const total = genderData.reduce((sum, item) => sum + item.value, 0);
-                const percentage = ((entry.payload.value / total) * 100).toFixed(0);
-                return `${entry.payload.name} - ${percentage}%`; // Format legend text
-              }}
-            />
-          </PieChart>
+      <div className="dashboard-grid">
+        {/* Gender Pie Chart */}
+        <div className="chart-card">
+          <h2>Gender Distribution</h2>
+          <div className="chart-wrapper">
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={genderData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={70}
+                  outerRadius={110}
+                  fill="#8884d8"
+                  dataKey="value"
+                  label={renderCustomizedLabel}
+                  labelLine={false}
+                  stroke="none"
+                >
+                  {genderData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px rgba(0,0,0,0.1)" }}
+                />
+                <Legend iconType="circle" verticalAlign="bottom" />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
         </div>
-      )}
 
-      {/* Age Line Graph */}
-      {activeTab === "Age" && (
-        <div className="chart-container">
-          <h2>Age Distribution of Patients</h2>
-          <LineChart width={600} height={300} data={ageData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="ageGroup" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="count" stroke="#8884d8" />
-          </LineChart>
+        {/* Age Line Graph */}
+        <div className="chart-card">
+          <h2>Age Distribution</h2>
+          <div className="chart-wrapper">
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={ageData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
+                <XAxis dataKey="ageGroup" stroke="#6b7280" tick={{ fill: '#6b7280' }} tickLine={false} axisLine={false} />
+                <YAxis stroke="#6b7280" tick={{ fill: '#6b7280' }} tickLine={false} axisLine={false} />
+                <Tooltip
+                  contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px rgba(0,0,0,0.1)" }}
+                />
+                <Line type="monotone" dataKey="count" name="Patients" stroke={LINE_COLOR} strokeWidth={3} dot={{ r: 5, strokeWidth: 2 }} activeDot={{ r: 8 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
-      )}
 
-      {/* Monthly Bar Graph */}
-      {activeTab === "Monthly" && (
-        <div className="chart-container">
-          <h2>Monthly Appointments for {currentYear}</h2>
-          <BarChart width={600} height={300} data={monthlyData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="count" fill="#8884d8" />
-          </BarChart>
+        {/* Monthly Bar Graph */}
+        <div className="chart-card">
+          <h2>Monthly Appointments ({currentYear})</h2>
+          <div className="chart-wrapper">
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={monthlyData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
+                <XAxis dataKey="month" stroke="#6b7280" tick={{ fill: '#6b7280' }} tickLine={false} axisLine={false} />
+                <YAxis stroke="#6b7280" tick={{ fill: '#6b7280' }} tickLine={false} axisLine={false} allowDecimals={false} />
+                <Tooltip
+                  cursor={{ fill: '#f3f4f6' }}
+                  contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px rgba(0,0,0,0.1)" }}
+                />
+                <Bar dataKey="count" name="Appointments" fill={BAR_COLOR} radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
-      )}
 
-      {/* Rating Scatter Plot */}
-      {activeTab === "Rating" && (
-        <div className="chart-container">
+        {/* Rating Scatter Plot */}
+        <div className="chart-card">
           <h2>Patient Ratings Over Time</h2>
-          <ScatterChart width={600} height={300}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" name="Date" />
-            <YAxis dataKey="rating" name="Rating" domain={[1, 5]} />
-            <Tooltip cursor={{ strokeDasharray: "3 3" }} />
-            <Legend />
-            <Scatter name="Ratings" data={ratingData} fill="#8884d8" />
-          </ScatterChart>
+          <div className="chart-wrapper">
+            <ResponsiveContainer width="100%" height={300}>
+              <ScatterChart margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis dataKey="date" name="Date" stroke="#6b7280" tick={{ fill: '#6b7280' }} tickLine={false} />
+                <YAxis dataKey="rating" name="Rating" domain={[1, 5]} stroke="#6b7280" tick={{ fill: '#6b7280' }} tickLine={false} axisLine={false} />
+                <Tooltip
+                  cursor={{ strokeDasharray: "3 3", stroke: "#9ca3af" }}
+                  contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px rgba(0,0,0,0.1)" }}
+                />
+                <Scatter name="Ratings" data={ratingData} fill={SCATTER_COLOR} />
+              </ScatterChart>
+            </ResponsiveContainer>
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

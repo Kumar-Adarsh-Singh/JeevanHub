@@ -34,8 +34,9 @@ function AdminNavBar() {
 	};
 
 	const handleSignOut = () => {
-		setAuth({ token: null, user: null });
+		setAuth({ token: null, user: null, role: 'guest' });
 		localStorage.removeItem("token");
+		localStorage.removeItem("role");
 		navigate("/signin");
 	};
 
@@ -129,12 +130,21 @@ function AdminNavBar() {
 						<div className="consultations-text">eHub</div>
 					</div>
 				</div>
-				<div className="search-signin"
-					style={{ padding: "0px 65px" }}>
-					<div className="search-bar"
-						style={{ height: "45px" }}>
+				<div className="search-signin">
+					<div className="search-bar">
 						<div className="dropdown">
-							<select>
+							<select onChange={(e) => {
+								const value = e.target.value;
+								switch(value) {
+									case "doctor": navigate("/doctors"); break;
+									case "disease": navigate("/treatments"); break;
+									case "medicine": navigate("/medicines"); break;
+									case "diet-yoga": navigate("/diet-yoga"); break;
+									case "blogs-videos": navigate("/blogs-videos"); break;
+									default: break;
+								}
+							}}>
+								<option value="" disabled selected hidden>Explore...</option>
 								<option value="doctor">Doctor</option>
 								<option value="disease">Diseases</option>
 								<option value="medicine">Medicines</option>
@@ -175,9 +185,6 @@ function AdminNavBar() {
 
 			{showModal && (
 				<div className="profile-modal" ref={modalRef}>
-					<div className="close-modal" onClick={handleProfileClick}>
-						&times;
-					</div>
 					<div className="user-profile" >
 						<img src="https://images.unsplash.com/photo-1458696352784-ffe1f47c2edc?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="image" />
 					</div>
@@ -187,35 +194,18 @@ function AdminNavBar() {
 							<strong>Name:</strong> {userName}
 						</p>
 						<p>
-							<strong>Email:</strong> {userEmail}
-						</p>
-						<p>
 							<strong>Phone:</strong> {userPhone}
 						</p>
 						<p>
-							<strong>Address: </strong> {userAddress}
-							<a
-								href="#"
-								onClick={handleChangeAddress}
-								className="change-address-link"
-							> (Change) </a>
-						</p>
-					</div>
-					<div className="prakriti-link-container">
-						<p>
-							<strong>Prakriti Determination: </strong>
-							<a
-								href="#"
-								onClick={handleOpenPrakritiForm}
-								className="prakriti-form-link"
-							>
-								Open Form
-							</a>
+							<strong>Email:</strong> {userEmail}
 						</p>
 					</div>
 					<div className="modal-btn-container">
 						<button onClick={handleSignOut} className="signout-btn">
 							Sign Out
+						</button>
+						<button onClick={handleProfileClick} className="close-btn">
+							Close
 						</button>
 					</div>
 				</div>

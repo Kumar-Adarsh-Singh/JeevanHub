@@ -5,7 +5,7 @@ import { AuthContext } from "../../context/AuthContext";
 
 function MyOrders() {
 	const [orders, setOrders] = useState([]);
-	const [status, setStatus] = useState("pending" || "delivered" || "accepted" || "rejected" || "shipped");
+	const [status, setStatus] = useState("pending");
 	const { auth } = useContext(AuthContext);
 	const retailerId = auth?.user?.id;
 
@@ -51,6 +51,8 @@ function MyOrders() {
 		}
 	};
 
+	const filteredOrders = orders.filter((order) => order.status === status);
+
 	return (
 		<div
 			className="myorders-container"
@@ -91,9 +93,12 @@ function MyOrders() {
 				</button>
 			</div>
 
-			{orders
-				.filter((order) => order.status === status)
-				.map((order) => (
+			{filteredOrders.length === 0 ? (
+				<div style={{ textAlign: "center", marginTop: "40px", fontSize: "18px", color: "#6e6e33" }}>
+					No orders found in the <strong>{status}</strong> category.
+				</div>
+			) : (
+				filteredOrders.map((order) => (
 					<div key={order._id} className="myorders-card">
 						<p>
 							<strong>Buyer Name:</strong> {order.customerName}
@@ -143,7 +148,7 @@ function MyOrders() {
 						</p>
 
 						<div className="myorders-actions">
-							{(status === "pending" || "accepted") && "Update Status:"}
+							{(status === "pending" || status === "accepted") && "Update Status:"}
 
 							{status === "pending" && (
 								<button onClick={() => updateOrderStatus(order._id, "accepted")}>
@@ -164,7 +169,8 @@ function MyOrders() {
 							)}
 						</div>
 					</div>
-				))}
+				))
+			)}
 		</div>
 	);
 }

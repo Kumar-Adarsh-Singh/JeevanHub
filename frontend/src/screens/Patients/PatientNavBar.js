@@ -36,8 +36,9 @@ function PatientNavBar() {
 	};
 
 	const handleSignOut = () => {
-		setAuth({ token: null, user: null });
+		setAuth({ token: null, user: null, role: 'guest' });
 		localStorage.removeItem("token");
+		localStorage.removeItem("role");
 		navigate("/signin");
 	};
 
@@ -127,12 +128,21 @@ function PatientNavBar() {
 					</div>
 				</div>
 
-				<div className="search-signin"
-					style={{ padding: "0px 65px" }}>
-					<div className="search-bar"
-						style={{ height: "45px" }}>
+				<div className="search-signin">
+					<div className="search-bar">
 						<div className="dropdown">
-							<select>
+							<select onChange={(e) => {
+								const value = e.target.value;
+								switch(value) {
+									case "doctor": navigate("/doctors"); break;
+									case "disease": navigate("/treatments"); break;
+									case "medicine": navigate("/medicines"); break;
+									case "diet-yoga": navigate("/diet-yoga"); break;
+									case "blogs-videos": navigate("/blogs-videos"); break;
+									default: break;
+								}
+							}}>
+								<option value="" disabled selected hidden>Explore...</option>
 								<option value="doctor">Doctor</option>
 								<option value="disease">Diseases</option>
 								<option value="medicine">Medicines</option>

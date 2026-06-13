@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "./NavBar.css";
 import logo from "../media/logo2.png";
 import menu_close from "../media/menu-close.svg";
@@ -11,6 +11,7 @@ const API_KEY = "f08bb887cc0d42bb8b9fb21993c3a6d3"; // Your OpenCage API key
 
 function NavBar() {
   const [showMenu, setShowMenu] = useState(false);
+  const navigate = useNavigate();
   const handleMenuClose = () => {
     setShowMenu(!showMenu);
   };
@@ -76,7 +77,18 @@ function NavBar() {
         <div className="search-signin">
           <div className="search-bar">
             <div className="dropdown">
-              <select>
+              <select onChange={(e) => {
+                const value = e.target.value;
+                switch(value) {
+                  case "doctor": navigate("/doctors"); break;
+                  case "disease": navigate("/treatments"); break;
+                  case "medicine": navigate("/medicines"); break;
+                  case "diet-yoga": navigate("/diet-yoga"); break;
+                  case "blogs-videos": navigate("/blogs-videos"); break;
+                  default: break;
+                }
+              }}>
+                <option value="" disabled selected hidden>Explore...</option>
                 <option value="doctor">Doctor</option>
                 <option value="disease">Diseases</option>
                 <option value="medicine">Medicines</option>
