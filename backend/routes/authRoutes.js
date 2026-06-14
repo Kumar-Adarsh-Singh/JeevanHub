@@ -45,7 +45,16 @@ const cpUpload = upload.fields([
 
 
 // Doctor, Retailer, Patient registration
-router.post("/register/doctor", cpUpload, registerDoctor);
+router.post("/register/doctor", (req, res, next) => {
+  cpUpload(req, res, function (err) {
+    if (err instanceof multer.MulterError) {
+      return res.status(400).json({ error: err.message });
+    } else if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+    next();
+  });
+}, registerDoctor);
 router.post("/register/retailer", registerRetailer);
 router.post("/register/patient", registerPatient);
 router.post("/login", loginUser);

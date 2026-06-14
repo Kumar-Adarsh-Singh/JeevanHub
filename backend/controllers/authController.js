@@ -17,6 +17,7 @@ exports.registerAdmin = async (req, res) => {
 	const { firstName, lastName, email, phone, password } = req.body;
 
 	try {
+		if (!password) return res.status(400).json({ error: 'Password is required' });
 		const existingAdmin = await Admin.findOne({ email });
 		if (existingAdmin) {
 			return res.status(400).json({ error: 'Admin already exists' });
@@ -37,6 +38,10 @@ exports.registerAdmin = async (req, res) => {
 			}
 		});
 	} catch (error) {
+		if (error.name === 'ValidationError') {
+			const messages = Object.values(error.errors).map(val => val.message);
+			return res.status(400).json({ error: messages.join(', ') });
+		}
 		res.status(500).json({ error: 'Registration failed' });
 	}
 };
@@ -47,6 +52,10 @@ exports.loginUser = async (req, res) => {
 	let user;
 
 	try {
+		if (!email || !password || !role) {
+			return res.status(400).json({ message: 'Email, password, and role are required' });
+		}
+
 		if (role === 'doctor') {
 			user = await Doctor.findOne({ email });
 		} else if (role === 'retailer') {
@@ -110,6 +119,7 @@ exports.registerDoctor = async (req, res) => {
 	// }
 
 	try {
+		if (!password) return res.status(400).json({ error: 'Password is required' });
 		const hashedPassword = await bcrypt.hash(password, 10);
 		let specializationArray = [];
 		if (specialization) {
@@ -155,6 +165,10 @@ exports.registerDoctor = async (req, res) => {
 			const duplicateField = Object.keys(error.keyValue)[0];
 			return res.status(400).json({ error: `${duplicateField} already exists` });
 		}
+		if (error.name === 'ValidationError') {
+			const messages = Object.values(error.errors).map(val => val.message);
+			return res.status(400).json({ error: messages.join(', ') });
+		}
 		res.status(500).json({ error: 'Registration failed' });
 	}
 };
@@ -166,6 +180,7 @@ exports.registerRetailer = async (req, res) => {
 
 	try {
 		console.log("Creating retailer:", firstName, lastName, BusinessName, email);
+		if (!password) return res.status(400).json({ error: 'Password is required' });
 		const hashedPassword = await bcrypt.hash(password, 10);
 		const retailer = new Retailer({ firstName, lastName, BusinessName, role: 'retailer', email, phone, dob, licenseNumber, age, gender, zipCode, password: hashedPassword, status: "active" });
 		await retailer.save();
@@ -184,6 +199,10 @@ exports.registerRetailer = async (req, res) => {
 			const duplicateField = Object.keys(error.keyValue)[0];
 			return res.status(400).json({ error: `${duplicateField} already exists` });
 		}
+		if (error.name === 'ValidationError') {
+			const messages = Object.values(error.errors).map(val => val.message);
+			return res.status(400).json({ error: messages.join(', ') });
+		}
 		res.status(500).json({ error: 'Registration failed' });
 	}
 };
@@ -194,6 +213,7 @@ exports.registerPatient = async (req, res) => {
 
 	try {
 		console.log("Registering patient:", firstName, lastName, email);
+		if (!password) return res.status(400).json({ error: 'Password is required' });
 		const hashedPassword = await bcrypt.hash(password, 10);
 		const patient = new Patient({ firstName, lastName, email, phone, dob, role: 'patient', age, gender, zipCode, password: hashedPassword });
 		await patient.save();
@@ -212,6 +232,10 @@ exports.registerPatient = async (req, res) => {
 		if (error.code === 11000) {
 			const duplicateField = Object.keys(error.keyValue)[0];
 			return res.status(400).json({ error: `${duplicateField} already exists` });
+		}
+		if (error.name === 'ValidationError') {
+			const messages = Object.values(error.errors).map(val => val.message);
+			return res.status(400).json({ error: messages.join(', ') });
 		}
 		res.status(500).json({ error: 'Registration failed' });
 	}

@@ -1,6 +1,7 @@
 // controllers/dietYogaController.js
 const DietYoga = require("../models/DietYoga");
 const Booking = require("../models/Booking");
+const Patient = require("../models/Patient");
 
 // Create new diet recommendation
 exports.prescribeDiet = async (req, res) => {
@@ -12,11 +13,21 @@ exports.prescribeDiet = async (req, res) => {
 	} = req.body;
 
 	try {
-		console.log("Prescribe diet Controller Called");
-		// 1. Check if the booking exists
+		// 1. Validate required fields upfront
+		if (!bookingId || !patientId || !doctorId || !dietPlan) {
+			return res.status(400).json({
+				message: "Missing required fields: bookingId, patientId, doctorId, and dietPlan are all required."
+			});
+		}
+
+		// 2. Check if the booking exists
 		const booking = await Booking.findById(bookingId);
 		if (!booking) {
 			return res.status(404).json({ error: "Booking not found" });
+		}
+
+		if (booking.doctorId.toString() !== req.user._id.toString()) {
+			return res.status(403).json({ message: "Forbidden: You are not the assigned doctor for this booking." });
 		}
 
 		// 2. Check if diet yoga recommendation already exists for this booking
@@ -36,7 +47,6 @@ exports.prescribeDiet = async (req, res) => {
 
 		} else {
 			// --- CREATE NEW RECORD ---
-			console.log("Prescribe diet Controller Called - new record");
 
 			dietYoga = new DietYoga({
 				bookingId: bookingId,
@@ -77,6 +87,10 @@ exports.prescribeYoga = async (req, res) => {
 		const booking = await Booking.findById(bookingId);
 		if (!booking) {
 			return res.status(404).json({ error: "Booking not found" });
+		}
+
+		if (booking.doctorId.toString() !== req.user._id.toString()) {
+			return res.status(403).json({ message: "Forbidden: You are not the assigned doctor for this booking." });
 		}
 
 		// 3. Find and Update
@@ -141,6 +155,10 @@ exports.updateDiet = async (req, res) => {
 			return res.status(404).json({ error: "Diet and yoga recommendation not found" });
 		}
 
+		if (dietYoga.doctor.toString() !== req.user._id.toString()) {
+			return res.status(403).json({ message: "Forbidden: Only the prescribing doctor can update this record." });
+		}
+
 		dietYoga.diet = diet;
 		dietYoga.updatedAt = Date.now();
 
@@ -168,6 +186,10 @@ exports.updateYoga = async (req, res) => {
 			return res.status(404).json({ error: "Diet and yoga recommendation not found" });
 		}
 
+		if (dietYoga.doctor.toString() !== req.user._id.toString()) {
+			return res.status(403).json({ message: "Forbidden: Only the prescribing doctor can update this record." });
+		}
+
 		dietYoga.yoga = yoga;
 		dietYoga.updatedAt = Date.now();
 
@@ -188,7 +210,12 @@ exports.getDietYogaByPatientEmail = async (req, res) => {
 	const { patientEmail } = req.params;
 
 	try {
-		const dietYoga = await DietYoga.findOne({ patientEmail });
+		const patient = await Patient.findOne({ email: patientEmail });
+		if (!patient) {
+			return res.status(404).json({ message: "Patient not found with the given email." });
+		}
+
+		const dietYoga = await DietYoga.findOne({ patient: patient._id });
 		if (!dietYoga) {
 			return res.status(404).json({ message: "No diet and yoga recommendations found for this patient." });
 		}
@@ -205,11 +232,16 @@ exports.deleteDietYoga = async (req, res) => {
 	const { id } = req.params;
 
 	try {
-		const deletedDietYoga = await DietYoga.findByIdAndDelete(id);
-
-		if (!deletedDietYoga) {
+		const dietYoga = await DietYoga.findById(id);
+		if (!dietYoga) {
 			return res.status(404).json({ error: "Diet and yoga recommendation not found" });
 		}
+
+		if (dietYoga.doctor.toString() !== req.user._id.toString()) {
+			return res.status(403).json({ message: "Forbidden: Only the prescribing doctor can delete this record." });
+		}
+
+		await DietYoga.findByIdAndDelete(id);
 
 		return res.status(200).json({ message: "Diet and yoga recommendation deleted successfully" });
 	} catch (error) {
